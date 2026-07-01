@@ -2,6 +2,6 @@
   "name": "erp-sandip-university",
   "version": "1.0.0",
   "scripts": {
-    "vercel-build": "python -m pip install -r requirements.txt && python -m django collectstatic --noinput"
+    "vercel-build": "python -m pip install -r requirements.txt && python sandip_university/manage.py migrate --noinput && python sandip_university/manage.py collectstatic --noinput"
   }
 }
