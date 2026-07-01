@@ -1,0 +1,715 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College ERP - Student Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root{
+            --sidebar-width:270px;
+            --sidebar-bg:#0f172a;
+            --sidebar-hover:#1e293b;
+            --primary:#2563eb;
+            --body-bg:#f1f5f9;
+            --card-bg:#ffffff;
+        }
+
+        body{
+            margin:0;
+            background:var(--body-bg);
+            font-family:'Segoe UI',sans-serif;
+            overflow-x:hidden;
+        }
+
+        .sidebar{
+            position:fixed;
+            top:0;
+            left:0;
+            width:var(--sidebar-width);
+            height:100vh;
+            background:var(--sidebar-bg);
+            color:white;
+            overflow-y:auto;
+            z-index:1000;
+        }
+
+        .brand{
+            padding:25px;
+            text-align:center;
+            border-bottom:1px solid rgba(255,255,255,.1);
+        }
+
+        .brand h3{
+            margin:0;
+            font-weight:700;
+            font-size:1.3rem;
+        }
+
+        .sidebar a{
+            display:flex;
+            align-items:center;
+            gap:15px;
+            padding:15px 25px;
+            color:#cbd5e1;
+            text-decoration:none;
+            transition:.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active{
+            background:var(--sidebar-hover);
+            color:white;
+            border-left:4px solid #3b82f6;
+            padding-left:21px;
+        }
+
+        .sidebar i{
+            width:25px;
+            text-align:center;
+        }
+
+        .main{
+            margin-left:var(--sidebar-width);
+            min-height:100vh;
+        }
+
+        .topbar{
+            background:white;
+            padding:20px 30px;
+            box-shadow:0 2px 10px rgba(0,0,0,.08);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        .content{
+            padding:30px;
+        }
+
+        .dashboard-card{
+            background:var(--card-bg);
+            border:none;
+            border-radius:15px;
+            box-shadow:0 4px 15px rgba(0,0,0,.08);
+            transition:.3s;
+        }
+
+        .dashboard-card:hover{
+            transform:translateY(-4px);
+            box-shadow:0 8px 25px rgba(0,0,0,.12);
+        }
+
+        .icon-box{
+            width:60px;
+            height:60px;
+            border-radius:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            font-size:24px;
+        }
+
+        .footer{
+            text-align:center;
+            padding:20px;
+            color:#64748b;
+        }
+
+        .summary-title{
+            font-size:.9rem;
+            color:#64748b;
+            text-transform:uppercase;
+            letter-spacing:.08em;
+            font-weight:600;
+        }
+
+        .summary-value{
+            font-size:2rem;
+            font-weight:700;
+            color:#1e293b;
+        }
+
+        .stat-change{
+            font-size:.9rem;
+            color:#16a34a;
+        }
+
+        .badge-status{
+            padding:8px 16px;
+            border-radius:20px;
+            font-weight:600;
+            font-size:.85rem;
+        }
+
+        .badge-paid{
+            background:#dcfce7;
+            color:#166534;
+        }
+
+        .badge-pending{
+            background:#fef08a;
+            color:#713f12;
+        }
+
+        table tbody tr:hover{
+            background:#f8fafc;
+        }
+
+        .btn-primary{
+            background:#2563eb;
+            border:none;
+        }
+
+        .btn-primary:hover{
+            background:#1d4ed8;
+        }
+
+        .list-group-item{
+            background:transparent;
+            border:none;
+            border-bottom:1px solid #e2e8f0;
+        }
+
+        .section-toggle{
+            cursor:pointer;
+            transition:.2s ease;
+        }
+
+        .section-toggle:hover{
+            background:#f8fafc;
+        }
+
+        .section-toggle .chevron{
+            transition:transform .2s ease;
+        }
+
+        .section-toggle[aria-expanded="true"] .chevron{
+            transform:rotate(180deg);
+        }
+
+        @media(max-width:992px){
+            .sidebar{
+                width:80px;
+            }
+            .sidebar span{
+                display:none;
+            }
+            .main{
+                margin-left:80px;
+            }
+            .topbar{
+                padding:15px 18px;
+                flex-wrap:wrap;
+                gap:10px;
+            }
+            .topbar h4{
+                font-size:1rem;
+            }
+        }
+
+        @media(max-width:768px){
+            .sidebar{
+                transform:translateX(-100%);
+                transition:.3s;
+            }
+            .main{
+                margin-left:0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="brand">
+        <h3><i class="fas fa-graduation-cap"></i><span> College ERP</span></h3>
+    </div>
+    <a href="{% url 'dashboard' %}" class="active"><i class="fas fa-gauge"></i><span>Dashboard</span></a>
+    <a href="#" data-section-target="profile-section"><i class="fas fa-user-graduate"></i><span>Profile</span></a>
+    <a href="#" data-section-target="schedule-details"><i class="fas fa-book"></i><span>Courses</span></a>
+    <a href="#" data-section-target="attendance-section"><i class="fas fa-calendar-check"></i><span>Attendance</span></a>
+    <a href="#" data-section-target="results-details"><i class="fas fa-file-lines"></i><span>Results</span></a>
+    <a href="#" data-section-target="payment-form-details"><i class="fas fa-money-bill-wave"></i><span>Fees</span></a>
+    <a href="#" data-section-target="library-section"><i class="fas fa-book-open"></i><span>Library</span></a>
+    <a href="#" data-section-target="settings-section"><i class="fas fa-cog"></i><span>Settings</span></a>
+    <a href="/"><i class="fas fa-right-from-bracket"></i><span>Logout</span></a>
+</div>
+
+<div class="main">
+    <nav class="topbar">
+        <div>
+            <h4 class="mb-0">Student Dashboard</h4>
+            <small class="text-muted">Track your academic progress and performance.</small>
+        </div>
+        {% if user.is_authenticated %}
+        <div>
+            <span class="me-3">Signed in as <strong>{{ user.First_name }}</strong></span>
+            <a class="btn btn-outline-secondary btn-sm" href="/">Logout</a>
+        </div>
+        {% endif %}
+    </nav>
+
+    <div class="content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Welcome Section -->
+        <div class="row align-items-center mb-4">
+            <div class="col-lg-8">
+                <h2>Welcome, {{ student.name|default:user.First_name }}</h2>
+                <p class="text-muted mb-0">
+                    <strong>Student ID:</strong> {{ student.student_id|default:"STU001024" }} •
+                    <strong>Course:</strong> {{ student.course|default:user.course|default:"Bachelor of Technology" }}
+                    {% if student.semester %}• <strong>Semester:</strong> {{ student.semester }}{% endif %}
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <span class="badge bg-primary py-2 px-3">Active</span>
+            </div>
+        </div>
+
+        <!-- Student Profile Card -->
+        <div class="row g-4 mb-4" id="profile-section">
+            <div class="col-12">
+                <div class="dashboard-card p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 text-center mb-3 mb-md-0">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:90px;height:90px;font-size:2rem; margin:auto;">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <h4 class="mb-2">Student Profile</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Name:</strong> {{ student.name|default:user.First_name|add:user.Last_name }}</p>
+                                    <p class="mb-1"><strong>Student ID:</strong> {{ student.student_id|default:"STU001024" }}</p>
+                                    <p class="mb-1"><strong>Email:</strong> {{ user.Email|default:"Not available" }}</p>
+                                    <p class="mb-1"><strong>Phone:</strong> {{ user.contact_no|default:"Not available" }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Course:</strong> {{ student.course|default:user.course|default:"Bachelor of Technology" }}</p>
+                                    <p class="mb-1"><strong>Semester:</strong> {{ student.semester|default:"Sem 1" }}</p>
+                                    <p class="mb-1"><strong>Attendance:</strong> {{ student.attendance|default:"0" }}%</p>
+                                    <p class="mb-1"><strong>CGPA:</strong> {{ student.cgpa|default:"0.00" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Details -->
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="dashboard-card p-4" id="attendance-section">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h4 class="mb-1">Attendance Details</h4>
+                            <p class="text-muted mb-0">Daily present/absent records with dates.</p>
+                        </div>
+                    </div>
+                    {% if attendance_records %}
+                        <div class="table-responsive">
+                            <table class="table table-borderless align-middle mb-0">
+                                <thead>
+                                    <tr style="border-bottom:2px solid #e2e8f0;">
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Subject</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in attendance_records %}
+                                    <tr>
+                                        <td>{{ record.date|date:"Y-m-d" }}</td>
+                                        <td>
+                                            {% if record.status == 'present' %}
+                                                <span class="badge-status badge-paid">Present</span>
+                                            {% else %}
+                                                <span class="badge-status badge-pending">Absent</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ record.schedule.subject|default:"Class" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No attendance details available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="row g-4 mb-4">
+            <!-- Attendance Card -->
+            <div class="col-md-3">
+                <div class="dashboard-card p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p class="summary-title mb-1">Attendance</p>
+                            <h3 class="summary-value">{{ student.attendance|default:"0" }}%</h3>
+                        </div>
+                        <div class="icon-box bg-primary"><i class="fas fa-chart-pie"></i></div>
+                    </div>
+                    <p class="text-muted mb-0">Current semester attendance rate.</p>
+                </div>
+            </div>
+
+            <!-- CGPA Card -->
+            <div class="col-md-3">
+                <div class="dashboard-card p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p class="summary-title mb-1">CGPA</p>
+                            <h3 class="summary-value">{{ student.cgpa|default:"0.00" }}</h3>
+                        </div>
+                        <div class="icon-box bg-success"><i class="fas fa-star"></i></div>
+                    </div>
+                    <p class="text-muted mb-0">Cumulative grade point average.</p>
+                </div>
+            </div>
+
+            <!-- Pending Fees Card -->
+            <div class="col-md-3">
+                <div class="dashboard-card p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p class="summary-title mb-1">Pending Fees</p>
+                            <h3 class="summary-value">₹{{ student.pending_fee|default:"0" }}</h3>
+                        </div>
+                        <div class="icon-box bg-warning"><i class="fas fa-wallet"></i></div>
+                    </div>
+                    <p class="text-muted mb-0">Outstanding fee balance.</p>
+                </div>
+            </div>
+
+            <!-- Total Subjects Card -->
+            <div class="col-md-3">
+                <div class="dashboard-card p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p class="summary-title mb-1">Subjects</p>
+                            <h3 class="summary-value">{{ assigned_subjects.count|default:"0" }}</h3>
+                        </div>
+                        <div class="icon-box bg-danger"><i class="fas fa-book"></i></div>
+                    </div>
+                    <div class="small text-muted">
+                        {% if assigned_subjects %}
+                            {% for subject in assigned_subjects %}
+                                <div class="mb-2 p-2 rounded bg-light">
+                                    <div class="fw-semibold text-dark">{{ subject.name }}</div>
+                                    <div>Course: {{ subject.course|default:"-" }}</div>
+                                    <div>Semester: {{ subject.semester|default:"-" }}</div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div>No subjects assigned yet.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Row -->
+        <div class="row g-4">
+            <!-- Payment History -->
+            <div class="col-lg-7">
+                <div class="dashboard-card p-4">
+                    <button class="btn btn-link p-0 text-start text-decoration-none w-100 section-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#payment-details" aria-expanded="true" aria-controls="payment-details">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="mb-1">Payment History</h5>
+                                <p class="text-muted mb-0">Your recent fee transactions.</p>
+                            </div>
+                            <i class="fas fa-chevron-down chevron text-muted"></i>
+                        </div>
+                    </button>
+                    <div class="collapse" id="payment-details">
+                        {% if payments %}
+                            <div class="table-responsive">
+                                <table class="table table-borderless align-middle mb-0">
+                                    <thead>
+                                        <tr style="border-bottom:2px solid #e2e8f0;">
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for payment in payments %}
+                                        <tr>
+                                            <td>{{ payment.date|date:"M d, Y" }}</td>
+                                            <td><strong>₹{{ payment.amount|floatformat:2 }}</strong></td>
+                                            <td>
+                                                {% if payment.status == 'Paid' %}
+                                                    <span class="badge-status badge-paid">{{ payment.status }}</span>
+                                                {% else %}
+                                                    <span class="badge-status badge-pending">{{ payment.status }}</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted mb-0">📋 No payment history available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Results -->
+            <div class="col-lg-5">
+                <div class="dashboard-card p-4">
+                    <button class="btn btn-link p-0 text-start text-decoration-none w-100 section-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#results-details" aria-expanded="true" aria-controls="results-details">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="mb-3">Academic Results</h5>
+                            </div>
+                            <i class="fas fa-chevron-down chevron text-muted"></i>
+                        </div>
+                    </button>
+                    <div class="collapse" id="results-details">
+                        {% if results %}
+                            <div class="table-responsive">
+                                <table class="table table-borderless align-middle mb-0">
+                                    <thead>
+                                        <tr style="border-bottom:2px solid #e2e8f0;">
+                                            <th>Subject</th>
+                                            <th>Marks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for result in results %}
+                                        <tr>
+                                            <td>{{ result.subject }}</td>
+                                            <td><strong>{{ result.marks }}/100</strong></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted mb-0">📊 No results published yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="row g-4 mt-2">
+            <!-- Class Schedule -->
+            <div class="col-lg-6">
+                <div class="dashboard-card p-4">
+                    <button class="btn btn-link p-0 text-start text-decoration-none w-100 section-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#schedule-details" aria-expanded="true" aria-controls="schedule-details">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="mb-3">Class Schedule</h5>
+                            </div>
+                            <i class="fas fa-chevron-down chevron text-muted"></i>
+                        </div>
+                    </button>
+                    <div class="collapse" id="schedule-details">
+                        {% if schedules %}
+                            <div class="list-group list-group-flush">
+                                {% for schedule in schedules %}
+                                <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ schedule.subject }}</h6>
+                                        <p class="text-muted mb-0"><i class="fas fa-clock"></i> {{ schedule.time }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted mb-0">📅 No scheduled classes at this time.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Make Payment -->
+            <div class="col-lg-6">
+                <div class="dashboard-card p-4">
+                    <button class="btn btn-link p-0 text-start text-decoration-none w-100 section-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#payment-form-details" aria-expanded="true" aria-controls="payment-form-details">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="mb-3">Make a Payment</h5>
+                            </div>
+                            <i class="fas fa-chevron-down chevron text-muted"></i>
+                        </div>
+                    </button>
+                    <div class="collapse" id="payment-form-details">
+                        <form id="razorpay-form" method="post" novalidate>
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label">Payment Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" step="0.01" name="amount" id="payment-amount" class="form-control" placeholder="Enter amount" value="{{ student.pending_fee|default:0|floatformat:2 }}" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Pay with Razorpay</button>
+                        </form>
+                        <div id="payment-status" class="mt-3 small"></div>
+                        {% if student.pending_fee %}
+                        <p class="text-muted small mt-3 mb-0">
+                            <strong>Outstanding Balance:</strong> ₹{{ student.pending_fee|floatformat:2 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-lg-6">
+                <div class="dashboard-card p-4" id="library-section">
+                    <h5 class="mb-3">Library Access</h5>
+                    <p class="text-muted mb-2">Your library account is active and ready for book loans.</p>
+                    <p class="mb-0"><strong>Books Issued:</strong> 2</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="dashboard-card p-4" id="settings-section">
+                    <h5 class="mb-3">Account Settings</h5>
+                    <p class="text-muted mb-2">Manage your account preferences and security details.</p>
+                    <p class="mb-0"><strong>Last Updated:</strong> Today</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="footer">© {% now "Y" %} Sandip University ERP System</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebarLinks = document.querySelectorAll('.sidebar a[data-section-target]');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                const targetId = this.getAttribute('data-section-target');
+                const targetElement = document.getElementById(targetId);
+                if (!targetElement) return;
+
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                const collapseTargets = ['payment-details', 'results-details', 'schedule-details', 'payment-form-details'];
+                collapseTargets.forEach(id => {
+                    const collapseEl = document.getElementById(id);
+                    if (collapseEl) {
+                        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
+                        if (id === targetId) {
+                            bsCollapse.show();
+                        } else {
+                            bsCollapse.hide();
+                        }
+                    }
+                });
+
+                document.querySelectorAll('.sidebar a[data-section-target]').forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        const form = document.getElementById('razorpay-form');
+        const statusBox = document.getElementById('payment-status');
+
+        if (!form) return;
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const amount = document.getElementById('payment-amount').value;
+            if (!amount || parseFloat(amount) <= 0) {
+                statusBox.innerHTML = '<div class="alert alert-warning py-2">Please enter a valid amount.</div>';
+                return;
+            }
+
+            statusBox.innerHTML = '<div class="text-muted">Creating payment order...</div>';
+
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch('{% url "create_razorpay_order" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: new URLSearchParams({ amount: amount })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.message || 'Unable to create order');
+                }
+
+                const options = {
+                    key: '{{ razorpay_key }}',
+                    amount: data.amount,
+                    currency: data.currency,
+                    name: 'Sandip University',
+                    description: 'Student Fee Payment',
+                    order_id: data.order_id,
+                    handler: function (response) {
+                        const verifyData = new URLSearchParams({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                        });
+
+                        fetch('{% url "verify_razorpay_payment" %}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'X-CSRFToken': csrfToken,
+                            },
+                            body: verifyData
+                        })
+                        .then(res => res.json())
+                        .then(result => {
+                            if (result.success) {
+                                window.location.href = '/payment/success/' + result.payment_id + '/';
+                            } else {
+                                statusBox.innerHTML = '<div class="alert alert-danger py-2">Payment verification failed.</div>';
+                            }
+                        })
+                        .catch(() => {
+                            statusBox.innerHTML = '<div class="alert alert-danger py-2">Payment verification error.</div>';
+                        });
+                    },
+                    prefill: {
+                        name: '{{ user.First_name|default:"Student" }} {{ user.Last_name|default:"" }}',
+                        email: '{{ user.Email|default:"" }}',
+                    },
+                    theme: { color: '#2563eb' }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+            })
+            .catch(error => {
+                statusBox.innerHTML = '<div class="alert alert-danger py-2">' + error.message + '</div>';
+            });
+        });
+    });
+</script>
+</body>
+</html>

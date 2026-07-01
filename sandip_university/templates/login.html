@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-card">
+            <header>
+                <h1>Login</h1>
+                <nav><a href="/register/">Register</a></nav>
+            </header>
+            <form action="" method="post">
+                {% csrf_token %}
+                <label for="Email">Email</label>
+                <input type="email" id="Email" name="Email" placeholder="Enter email" required>
+                <label for="Password">Password</label>
+                <input type="password" id="Password" name="Password" placeholder="Enter password" required>
+                <label for="role">Login as</label>
+                <select id="role" name="role" required>
+                    <option value="student">Student</option>
+                    <option value="faculty">Faculty</option>
+                </select>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

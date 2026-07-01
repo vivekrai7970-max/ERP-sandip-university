@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+env/
+.venv/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# JetBrains
+.idea/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.so
+*.egg
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Runtime files
+*.pid
+*.seed
+*.cover
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+
+# mypy
+.mypy_cache/
+.dmypy.json
+
+# Jupyter
+.ipynb_checkpoints/

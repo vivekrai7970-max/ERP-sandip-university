@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-card">
+            <header>
+                <h1>Register</h1>
+                <nav><a href="/">Login</a></nav>
+            </header>
+            <form action="/register/" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="First_name">First Name</label>
+                    <input type="text" id="First_name" name="First_name" placeholder="Enter first name" required>
+                </div>
+                <div class="form-group">
+                    <label for="Last_name">Last Name</label>
+                    <input type="text" id="Last_name" name="Last_name" placeholder="Enter last name" required>
+                </div>
+                <div class="form-group">
+                    <label for="Date_of_birth">Date of birth</label>
+                    <input type="date" id="Date_of_birth" name="Date_of_birth" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact_no">Contact No</label>
+                    <input type="text" id="contact_no" name="contact_no" placeholder="contact_no" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Register as</label>
+                    <select id="role" name="role" required>
+                        <option value="student">Student</option>
+                        <option value="faculty">Faculty</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="course">Course / Department</label>
+                    <select id="course" name="course" required>
+                        <option value="Btech">Btech</option>
+                        <option value="BCA">BCA</option>
+                        <option value="Polytechnic">Polytechnic</option>
+                        <option value="Law">Law</option>
+                        <option value="Faculty">Faculty</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input type="email" id="Email" name="Email" placeholder="Enter email" required>
+                </div>
+                <div class="form-group">
+                    <label for="Password">Password</label>
+                    <input type="password" id="Password" name="Password" placeholder="Enter password" required>
+                </div>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

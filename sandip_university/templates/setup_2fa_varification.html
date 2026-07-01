@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setup 2FA</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body{
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(to right, #00b09b, #96c93d);
+        }
+
+        .container{
+            width:400px;
+            background:white;
+            padding:40px;
+            border-radius:12px;
+            text-align:center;
+            box-shadow:0px 0px 20px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            color:#333;
+            margin-bottom:25px;
+        }
+
+        .qr-box{
+            margin:20px 0;
+        }
+
+        .qr-box img{
+            width:250px;
+            height:250px;
+            border:5px solid #007BFF;
+            padding:10px;
+            border-radius:10px;
+            background:white;
+        }
+
+        .info{
+            margin-top:15px;
+            color:#555;
+            font-size:16px;
+            line-height:24px;
+        }
+
+        .verify-btn{
+            margin-top:30px;
+        }
+
+        .verify-btn a{
+            display:inline-block;
+            padding:12px 25px;
+            background:#007BFF;
+            color:white;
+            text-decoration:none;
+            border-radius:6px;
+            font-size:18px;
+            transition:0.3s;
+        }
+
+        .verify-btn a:hover{
+            background:#0056b3;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h2>Setup Google Authenticator</h2>
+
+        <div class="qr-box">
+
+            <img src="data:image/png;base64,{{ qr_code }}">
+
+        </div>
+
+        <div class="info">
+
+            Scan this QR code using:
+
+            <br><br>
+
+            Google Authenticator App
+
+        </div>
+
+        <div class="verify-btn">
+
+            <a href="/verify/">
+                Verify Code
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
