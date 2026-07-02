@@ -3,6 +3,10 @@ set -o errexit
 
 pip install -r requirements.txt
 
-python sandip_university/manage.py collectstatic --no-input
+cd sandip_university
 
-python sandip_university/manage.py migrate
+python manage.py collectstatic --no-input
+
+python manage.py migrate
+
+cd ..
