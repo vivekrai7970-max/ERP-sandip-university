@@ -18,6 +18,44 @@ def _get_session_user(request):
     return Register.objects.filter(Email=user_email).first()
 
 
+def _ensure_demo_account():
+    if Register.objects.exists():
+        return None
+
+    demo_email = os.environ.get('DEFAULT_ADMIN_EMAIL', 'admin@sandipuniversity.edu')
+    demo_password = os.environ.get('DEFAULT_ADMIN_PASSWORD', 'admin123')
+    demo_role = os.environ.get('DEFAULT_ADMIN_ROLE', 'faculty')
+
+    return Register.objects.create(
+        First_name='Admin',
+        Last_name='User',
+        Email=demo_email,
+        Password=demo_password,
+        Date_of_birth='2000-01-01',
+        contact_no='0000000000',
+        course='Faculty',
+        role=demo_role,
+    )
+
+
+def _authenticate_user(email, password, role=None):
+    normalized_email = (email or '').strip().lower()
+    if not normalized_email or not password:
+        return None
+
+    candidates = []
+    if role in {'student', 'faculty'}:
+        candidates.append(Register.objects.filter(Email__iexact=normalized_email, Password=password, role=role).first())
+
+    candidates.append(Register.objects.filter(Email__iexact=normalized_email, Password=password).first())
+
+    for user in candidates:
+        if user:
+            return user
+
+    return None
+
+
 def register_view(request):
     if request.method == "POST":
         a = request.POST['First_name']
@@ -46,17 +84,19 @@ def register_view(request):
 
 def login_view(request):
     if request.method == "POST":
-        email = request.POST['Email']
-        password = request.POST['Password']
+        email = request.POST.get('Email', '')
+        password = request.POST.get('Password', '')
         role = request.POST.get('role', 'student')
-        user = Register.objects.filter(Email=email, Password=password, role=role).first()
+
+        _ensure_demo_account()
+        user = _authenticate_user(email, password, role)
         if user:
             request.session['user_email'] = user.Email
             request.session['user_role'] = user.role
             request.session['is_2fa_verified'] = False
             return redirect('setup_2fa')
-        else:
-            return HttpResponse("Invalid email, password, or role")
+        return HttpResponse("Invalid email, password, or role")
+
     return render(request, 'login.html')
 
 
