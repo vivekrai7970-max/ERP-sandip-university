@@ -61,7 +61,7 @@ python -c "from django.core.management.utils import get_random_secret_key; print
    - Collect static files
    - Start your application
 
-Your app will be live at `https://your-app-name.onrender.com`
+Your app will be live at `https://your-sandip-university.onrender.com`
 
 ## Important Notes
 

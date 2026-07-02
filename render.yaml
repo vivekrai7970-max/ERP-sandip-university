@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt && cd sandip_university && python manage.py collectstatic --no-input && python manage.py migrate && cd .."
-    startCommand: "cd sandip_university && gunicorn sandip_university.wsgi:application --bind 0.0.0.0:$PORT"
+    startCommand: "gunicorn app:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: DJANGO_SECRET_KEY
         scope: project
